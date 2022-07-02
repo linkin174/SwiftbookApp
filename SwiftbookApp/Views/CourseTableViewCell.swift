@@ -9,11 +9,13 @@
 import UIKit
 
 class CourseTableViewCell: UITableViewCell {
-    func configure(with course: Course) {
+    func configure(with rowData: RowData) {
+        print("Cell data \(rowData)")
+        guard let imageData = ImageManager.shared.fetchImageData(from: rowData.imageURL) else { return }
+        guard let image = UIImage(data: imageData) else { return }
         var content = defaultContentConfiguration()
-        content.text = course.name
-        guard let imageData = ImageManager.shared.fetchImageData(from: course.imageUrl) else { return }
-        content.image = UIImage(data: imageData)
+        content.text = rowData.courseName
+        content.image = image
         contentConfiguration = content
     }
 }

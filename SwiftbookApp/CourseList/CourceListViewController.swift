@@ -1,41 +1,46 @@
 //
-//  CourseListViewController.swift
+//  CourceListViewController.swift
 //  SwiftbookApp
 //
-//  Created by Alexey Efimov on 04/08/2019.
-//  Copyright © 2019 Alexey Efimov. All rights reserved.
+//  Created by Aleksandr Kretov on 01.07.2022.
+//  Copyright © 2022 Alexey Efimov. All rights reserved.
 //
 
 import UIKit
 
+protocol CourseListViewInput: AnyObject {
+    func load()
+}
+
+protocol CourseListViewOutput {
+    init(view: CourseListViewInput)
+    func getRowsData()
+    func getRowData(for indexPath: IndexPath) -> RowData
+    func getNumberOfRows() -> Int
+    func didSelectedRow(at indexPath: IndexPath)
+}
+
 class CourseListViewController: UIViewController {
+    
 
     @IBOutlet var tableView: UITableView!
     
+    var presenter: CourseListViewOutput!
+    private let configurator: CourseListConfiguratorInput = CourseListConfigurator()
     private var activityIndicator: UIActivityIndicatorView?
-    private var courses: [Course] = []
-    
+  
     override func viewDidLoad() {
         super.viewDidLoad()
+        configurator.configure(with: self)
         tableView.rowHeight = 100
         activityIndicator = showActivityIndicator(in: view)
         setupNavigationBar()
-        getCourses()
+        presenter.getRowsData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let detailVC = segue.destination as! CourseDetailsViewController
         detailVC.course = sender as? Course
-    }
-    
-    private func getCourses() {
-        NetworkManager.shared.fetchData() { courses in
-            self.courses = courses
-            DispatchQueue.main.async {
-                self.activityIndicator?.stopAnimating()
-                self.tableView.reloadData()
-            }
-        }
     }
     
     private func setupNavigationBar() {
@@ -56,7 +61,6 @@ class CourseListViewController: UIViewController {
         activityIndicator.startAnimating()
         activityIndicator.center = view.center
         activityIndicator.hidesWhenStopped = true
-        
         view.addSubview(activityIndicator)
         
         return activityIndicator
@@ -64,27 +68,31 @@ class CourseListViewController: UIViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension CourseListViewController: UITableViewDataSource {
+extension CourseListViewController: UITableViewDataSource, CourseListViewInput {
+    func load() {
+        DispatchQueue.main.async {
+            self.activityIndicator?.stopAnimating()
+            self.tableView.reloadData()
+        }
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return courses.count
+        presenter.getNumberOfRows()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CourseCell", for: indexPath) as! CourseTableViewCell
-        let course = courses[indexPath.row]
-        cell.configure(with: course)
-        
+        let data = presenter.getRowData(for: indexPath)
+        cell.configure(with: data)
         return cell
     }
 }
 
 // MARK: - UITableViewDelegate
 extension CourseListViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let course = courses[indexPath.row]
-        performSegue(withIdentifier: "ShowDetails", sender: course)
+        presenter.didSelectedRow(at: indexPath)
     }
 }
+
