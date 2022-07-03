@@ -6,29 +6,23 @@
 //  Copyright © 2022 Alexey Efimov. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-protocol CourseListRouterInput {
-    init(view: CourseDetailsViewInput)
-    func goToDetailsView()
-    func goBack()
+protocol CourseListRouterInput: AnyObject {
+    func goToDetailsView(with course: Course)
+    init(viewController: UIViewController)
 }
 
 class CourseListRouter: CourseListRouterInput {
-    func goToDetailsView() {
-        
+    unowned private let viewController: UIViewController
+    
+    func goToDetailsView(with course: Course) {
+        viewController.performSegue(withIdentifier: "ShowDetails", sender: course)
     }
     
-    func goBack() {
-        
+    required init(viewController: UIViewController) {
+        self.viewController = viewController
     }
     
-    unowned var view: CourseDetailsViewInput!
 
-    required init(view: CourseDetailsViewInput) {
-        self.view = view
-    }
-    
-    
-    
 }

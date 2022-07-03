@@ -9,12 +9,17 @@
 import UIKit
 
 protocol CourseDetailsViewInput: AnyObject {
-    func setupView(_ rowData: RowData)
+    func setCourseName(_ text: String)
+    func setNumberOfLessons(_ text: String)
+    func setNumberOfTests(_ text : String)
+    func setImage(from imageData: Data)
+    func setImageTintDepedingOn(_ status: Bool)
 }
 
 protocol CourseDetailsViewOutput {
     init(view: CourseDetailsViewInput)
     func viewLoaded()
+    func favoriteButtonPressed()
 }
 
 class CourseDetailsViewController: UIViewController {
@@ -25,53 +30,38 @@ class CourseDetailsViewController: UIViewController {
     @IBOutlet private var courseImage: UIImageView!
     @IBOutlet private var favoriteButton: UIButton!
     
-    var course: Course!
     var presenter: CourseDetailsViewOutput!
-    private let configurator: CourseDetailsViewConfigurator = CourseDetailsViewConfigurator()
     
     private var isFavorite = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadFavoriteStatus()
-//        setupUI()
         presenter.viewLoaded()
     }
     
     @IBAction func toggleFavorite(_ sender: UIButton) {
-        isFavorite.toggle()
-        setStatusForFavoriteButton()
-        DataManager.shared.setFavoriteStatus(for: course.name, with: isFavorite)
-    }
-    
-//    private func setupUI() {
-//        courseNameLabel.text = course.name
-//        numberOfLessonsLabel.text = "Number of lessons: \(course.numberOfLessons)"
-//        numberOfTestsLabel.text = "Number of tests: \(course.numberOfTests)"
-//
-//        if let imageData = ImageManager.shared.fetchImageData(from: course.imageUrl) {
-//            courseImage.image = UIImage(data: imageData)
-//        }
-//
-//        setStatusForFavoriteButton()
-//    }
-//
-    private func setStatusForFavoriteButton() {
-        favoriteButton.tintColor = isFavorite ? .red : .gray
-    }
-    
-    private func loadFavoriteStatus() {
-        isFavorite = DataManager.shared.getFavoriteStatus(for: course.name)
+        presenter.favoriteButtonPressed()
     }
 }
 
 extension CourseDetailsViewController: CourseDetailsViewInput {
-    func setupView(_ rowData: RowData) {
-        courseNameLabel.text = rowData.courseName
-        numberOfLessonsLabel.text = rowData.numberOfLessons
-        numberOfTestsLabel.text = rowData.numberOfTests
-        guard let imageData = ImageManager.shared.fetchImageData(from: rowData.imageURL) else { return }
-        guard let image = UIImage(data: imageData) else { return }
-        courseImage.image = image
+    func setImageTintDepedingOn(_ status: Bool) {
+        favoriteButton.tintColor = status ? .red : .gray
+    }
+    
+    func setCourseName(_ name: String) {
+        courseNameLabel.text = name
+    }
+    
+    func setNumberOfLessons(_ text: String) {
+        numberOfLessonsLabel.text = text
+    }
+    
+    func setNumberOfTests(_ text: String) {
+        numberOfTestsLabel.text = text
+    }
+    
+    func setImage(from imageData: Data) {
+        courseImage.image = UIImage(data: imageData)
     }
 }

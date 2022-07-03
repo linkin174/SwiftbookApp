@@ -16,6 +16,7 @@
 		707ED9F2286F13D6001DBE8C /* CourseDetailsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707ED9F1286F13D6001DBE8C /* CourseDetailsInteractor.swift */; };
 		707ED9F4286F13DF001DBE8C /* CourseDetailsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707ED9F3286F13DF001DBE8C /* CourseDetailsPresenter.swift */; };
 		707ED9F6286F13FB001DBE8C /* CourseDetailsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707ED9F5286F13FB001DBE8C /* CourseDetailsConfigurator.swift */; };
+		70ED03AF28721F7500BB25B9 /* CourseCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70ED03AE28721F7500BB25B9 /* CourseCellViewModel.swift */; };
 		A823521B22F6AEAC00FE65E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A823521A22F6AEAC00FE65E0 /* AppDelegate.swift */; };
 		A823522022F6AEAC00FE65E0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A823521E22F6AEAC00FE65E0 /* Main.storyboard */; };
 		A823522222F6AEAE00FE65E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A823522122F6AEAE00FE65E0 /* Assets.xcassets */; };
@@ -37,6 +38,7 @@
 		707ED9F1286F13D6001DBE8C /* CourseDetailsInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailsInteractor.swift; sourceTree = "<group>"; };
 		707ED9F3286F13DF001DBE8C /* CourseDetailsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailsPresenter.swift; sourceTree = "<group>"; };
 		707ED9F5286F13FB001DBE8C /* CourseDetailsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailsConfigurator.swift; sourceTree = "<group>"; };
+		70ED03AE28721F7500BB25B9 /* CourseCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseCellViewModel.swift; sourceTree = "<group>"; };
 		A823521722F6AEAC00FE65E0 /* SwiftbookApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftbookApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823521A22F6AEAC00FE65E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A823521F22F6AEAC00FE65E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 		707ED9E3286F08EB001DBE8C /* CourseList */ = {
 			isa = PBXGroup;
 			children = (
+				A823523622F6EAE800FE65E0 /* CourseCell */,
 				707ED9E4286F08FD001DBE8C /* CourceListViewController.swift */,
 				707ED9E6286F0908001DBE8C /* CourceListPresenter.swift */,
 				707ED9E8286F0916001DBE8C /* CourceListInteractor.swift */,
@@ -106,7 +109,6 @@
 				707ED9EE286F13AB001DBE8C /* CourseDetails */,
 				707ED9E3286F08EB001DBE8C /* CourseList */,
 				A823523222F6EA6000FE65E0 /* Models */,
-				A823523622F6EAE800FE65E0 /* Views */,
 				A823523922F6EC6000FE65E0 /* Services */,
 				A823523022F6EA3B00FE65E0 /* Storyboard */,
 				A823523322F6EA8F00FE65E0 /* Supporting Files */,
@@ -149,12 +151,13 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		A823523622F6EAE800FE65E0 /* Views */ = {
+		A823523622F6EAE800FE65E0 /* CourseCell */ = {
 			isa = PBXGroup;
 			children = (
 				A823523C22F6F1E900FE65E0 /* CourseTableViewCell.swift */,
+				70ED03AE28721F7500BB25B9 /* CourseCellViewModel.swift */,
 			);
-			path = Views;
+			path = CourseCell;
 			sourceTree = "<group>";
 		};
 		A823523922F6EC6000FE65E0 /* Services */ = {
@@ -243,6 +246,7 @@
 				707ED9E9286F0916001DBE8C /* CourceListInteractor.swift in Sources */,
 				A823523822F6EBD000FE65E0 /* Course.swift in Sources */,
 				707ED9F0286F13C3001DBE8C /* CourseDetailsViewController.swift in Sources */,
+				70ED03AF28721F7500BB25B9 /* CourseCellViewModel.swift in Sources */,
 				707ED9F4286F13DF001DBE8C /* CourseDetailsPresenter.swift in Sources */,
 				A86B500525A1C7D200BA8E4B /* ImageManager.swift in Sources */,
 				707ED9F2286F13D6001DBE8C /* CourseDetailsInteractor.swift in Sources */,

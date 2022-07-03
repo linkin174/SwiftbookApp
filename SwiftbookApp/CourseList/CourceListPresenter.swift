@@ -9,46 +9,44 @@
 import Foundation
 
 struct RowData {
-    let imageURL: URL
+    let imageData: Data
     let courseName: String
     let numberOfLessons: String
     let numberOfTests: String
 }
 
-class CourseListPresenter: CourseListViewOutput, CourseListInteractorOutput {
-    
-    
-    var rowData: [RowData] = []
-    
-    func getNumberOfRows() -> Int {
-        rowData.count
+struct ListDataStore {
+    var courses: [Course]
+}
+
+final class CourseListPresenter: CourseListViewOutput, CourseListInteractorOutput {
+
+    func recieve(_ dataStore: ListDataStore) {
+        self.dataStore = dataStore
+        let section = CourseSectionViewModel()
+        dataStore.courses.forEach { section.rows.append(CourseCellViewModel(course: $0, imageManager: ImageManager())) }
+        view.reloadData(for: section)
     }
     
-    func getRowData(for indexPath: IndexPath) -> RowData {
-        rowData[indexPath.row]
-    }
     
-    func recieveRowData(_ rowData: [RowData]) {
-        view.load()
-        self.rowData = rowData
-    }
-    
-    func getRowsData() {
-        interactor.provideRowData()
-    }
+    private var dataStore: ListDataStore?
     
     func didSelectedRow(at indexPath: IndexPath) {
-        
+        guard let course = dataStore?.courses[indexPath.row] else { return }
+        router.goToDetailsView(with: course)
     }
     
+    func viewIsLoaded() {
+        interactor.fetchCourses()
+    }
     
-    unowned private let view: CourseListViewInput
+
+    private unowned let view: CourseListViewInput
+    var router: CourseListRouterInput!
     var interactor: CourseListInteractorInput!
-   
+    
     required init(view: CourseListViewInput) {
         self.view = view
     }
     
-    
 }
-

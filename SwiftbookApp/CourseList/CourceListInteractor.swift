@@ -7,34 +7,33 @@
 //
 
 import Foundation
-import UIKit
 
 protocol CourseListInteractorInput {
-    init(presenter: CourseListInteractorOutput)
-    func provideRowData()
-    
+    init(presenter: CourseListInteractorOutput, networkManager: NetworkManagerProtocol)
+    func fetchCourses()
 }
 
 protocol CourseListInteractorOutput: AnyObject {
-    func recieveRowData(_ rowData: [RowData])
+    func recieve(_ dataStore: ListDataStore)
 }
 
 class CourseListInteractor: CourseListInteractorInput {
     
     unowned private let presenter: CourseListInteractorOutput
-    required init(presenter: CourseListInteractorOutput) {
+    private let networkManager: NetworkManagerProtocol
+    
+    required init(presenter: CourseListInteractorOutput, networkManager: NetworkManagerProtocol) {
         self.presenter = presenter
+        self.networkManager = networkManager
     }
     
-    func provideRowData() {
-       NetworkManager.shared.fetchData(completion: { courses in
-          let  rowsData = courses.map { course in
-               RowData(imageURL: course.imageUrl,
-                       courseName: course.name,
-                       numberOfLessons: String(course.numberOfLessons),
-                       numberOfTests: String(course.numberOfTests))
-           }
-           self.presenter.recieveRowData(rowsData)
-        })
+    func fetchCourses() {
+       networkManager.fetchData { [unowned self] courses in
+            let dataStore = ListDataStore(courses: courses)
+            presenter.recieve(dataStore)
+        }
     }
+    
+    
+    
 }

@@ -8,13 +8,14 @@
 
 import Foundation
 
-class DataManager {
-    
-    static let shared = DataManager()
+protocol DataManagerProtocol {
+    func setFavoriteStatus(for courseName: String, with status: Bool)
+    func getFavoriteStatus(for courseName: String) -> Bool
+}
+
+class DataManager: DataManagerProtocol {
     
     private let userDefaults = UserDefaults()
-    
-    private init() {}
     
     func setFavoriteStatus(for courseName: String, with status: Bool) {
         userDefaults.set(status, forKey: courseName)

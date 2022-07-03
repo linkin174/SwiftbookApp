@@ -9,14 +9,12 @@
 import UIKit
 
 protocol CourseListViewInput: AnyObject {
-    func load()
+    func reloadData(for section: CourseSectionViewModel)
 }
 
 protocol CourseListViewOutput {
     init(view: CourseListViewInput)
-    func getRowsData()
-    func getRowData(for indexPath: IndexPath) -> RowData
-    func getNumberOfRows() -> Int
+    func viewIsLoaded()
     func didSelectedRow(at indexPath: IndexPath)
 }
 
@@ -27,20 +25,22 @@ class CourseListViewController: UIViewController {
     
     var presenter: CourseListViewOutput!
     private let configurator: CourseListConfiguratorInput = CourseListConfigurator()
+    private var sectionViewModel: CourseSectionViewModelProtocol = CourseSectionViewModel()
     private var activityIndicator: UIActivityIndicatorView?
   
     override func viewDidLoad() {
         super.viewDidLoad()
         configurator.configure(with: self)
-        tableView.rowHeight = 100
+        presenter.viewIsLoaded()
         activityIndicator = showActivityIndicator(in: view)
         setupNavigationBar()
-        presenter.getRowsData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let detailVC = segue.destination as! CourseDetailsViewController
-        detailVC.course = sender as? Course
+        let configurator: CourseDetailsConfiguratorInput = CourseDetailsViewConfigurator()
+        guard let course = sender as? Course else { return }
+        configurator.configure(with: detailVC, course)
     }
     
     private func setupNavigationBar() {
@@ -62,28 +62,34 @@ class CourseListViewController: UIViewController {
         activityIndicator.center = view.center
         activityIndicator.hidesWhenStopped = true
         view.addSubview(activityIndicator)
-        
         return activityIndicator
     }
 }
 
 // MARK: - UITableViewDataSource
 extension CourseListViewController: UITableViewDataSource, CourseListViewInput {
-    func load() {
-        DispatchQueue.main.async {
+    func reloadData(for section: CourseSectionViewModel) {
+        sectionViewModel = section
+        tableView.reloadData()
+        activityIndicator?.stopAnimating()
+    }
+    
+    func didLoaded() {
             self.activityIndicator?.stopAnimating()
             self.tableView.reloadData()
-        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        presenter.getNumberOfRows()
+        sectionViewModel.rows.count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        CGFloat(sectionViewModel.rows[indexPath.row].cellHeight)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CourseCell", for: indexPath) as! CourseTableViewCell
-        let data = presenter.getRowData(for: indexPath)
-        cell.configure(with: data)
+        let cell = tableView.dequeueReusableCell(withIdentifier: sectionViewModel.rows[indexPath.row].cellIdentifier, for: indexPath) as! CourseTableViewCell
+        cell.viewModel = sectionViewModel.rows[indexPath.row]
         return cell
     }
 }

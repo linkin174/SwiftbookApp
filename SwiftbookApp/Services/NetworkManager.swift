@@ -8,13 +8,13 @@
 
 import Foundation
 
-class NetworkManager {
-    
-    static let shared = NetworkManager()
+protocol NetworkManagerProtocol {
+    func fetchData(completion: @escaping (_ courses: [Course]) -> Void)
+}
+
+class NetworkManager: NetworkManagerProtocol {
     
     private let api = "https://swiftbook.ru//wp-content/uploads/api/api_courses"
-    
-    private init() {}
     
     func fetchData(completion: @escaping (_ courses: [Course]) -> Void) {
         guard let url = URL(string: api) else { return }

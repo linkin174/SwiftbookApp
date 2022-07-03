@@ -9,26 +9,51 @@
 import UIKit
 
 protocol CourseDetailsViewInteractorInput {
-    init(presenter: CourseDetailsViewInteractorOutput)
-    func provideViewData(from course: Course)
+    init(presenter: CourseDetailsViewInteractorOutput, course: Course, imageManager: ImageManagerProtocol, dataManager: DataManagerProtocol)
+    var isFavorite: Bool { get }
+    func provideData()
+    func toggleFavorite()
 }
 
 protocol CourseDetailsViewInteractorOutput: AnyObject {
-    func recieveViewData(_ rowData: RowData)
+    func recieve(_ viewData: DetailsData)
+    func recieveFavorite(_ status: Bool)
 }
 
 class CourseDetailsViewInteractor: CourseDetailsViewInteractorInput {
-    private unowned let presenter: CourseDetailsViewInteractorOutput
-    required init(presenter: CourseDetailsViewInteractorOutput) {
-        self.presenter = presenter
+    
+    var isFavorite: Bool {
+        get {
+            dataManager.getFavoriteStatus(for: course.name)
+        } set {
+            dataManager.setFavoriteStatus(for: course.name, with: newValue)
+        }
     }
     
-    func provideViewData(from course: Course) {
-        let viewData = RowData(imageURL: course.imageUrl,
-                               courseName: course.name,
-                               numberOfLessons: String(course.numberOfLessons),
-                               numberOfTests: String(course.numberOfTests))
-        presenter.recieveViewData(viewData)
+    private let course: Course
+    private let imageManager: ImageManagerProtocol
+    private let dataManager: DataManagerProtocol
+    private unowned let presenter: CourseDetailsViewInteractorOutput
+    
+    required init(presenter: CourseDetailsViewInteractorOutput, course: Course, imageManager: ImageManagerProtocol, dataManager: DataManagerProtocol) {
+        self.presenter = presenter
+        self.course = course
+        self.imageManager = imageManager
+        self.dataManager = dataManager
     }
-
+    
+    func toggleFavorite() {
+        isFavorite.toggle()
+        presenter.recieveFavorite(isFavorite)
+    }
+    
+    func provideData() {
+        let data = imageManager.fetchImageData(from: course.imageUrl)
+        let viewData = DetailsData(imageData: data,
+                                   courseName: course.name,
+                                   numberOfLessons: course.numberOfLessons,
+                                   numberOfTests: course.numberOfTests,
+                                   isFavorite: isFavorite)
+        presenter.recieve(viewData)
+    }
 }

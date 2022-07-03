@@ -8,7 +8,21 @@
 
 import Foundation
 
+protocol CourseDetailsConfiguratorInput {
+    func configure(with viewController: CourseDetailsViewController, _ course: Course)
+}
 
-class CourseDetailsViewConfigurator {
-    
+class CourseDetailsViewConfigurator: CourseDetailsConfiguratorInput {
+    func configure(with viewController: CourseDetailsViewController, _ course: Course) {
+        
+        let presenter = CourseDetailsPresenter(view: viewController)
+        let interactor = CourseDetailsViewInteractor(
+            presenter: presenter,
+            course: course,
+            imageManager: ImageManager(),
+            dataManager: DataManager()
+        )
+        viewController.presenter = presenter
+        presenter.interactor = interactor
+    }
 }
