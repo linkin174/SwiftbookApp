@@ -13,16 +13,15 @@ protocol CourseListRouterInput: AnyObject {
     init(viewController: UIViewController)
 }
 
-class CourseListRouter: CourseListRouterInput {
-    unowned private let viewController: UIViewController
-    
-    func goToDetailsView(with course: Course) {
-        viewController.performSegue(withIdentifier: "ShowDetails", sender: course)
-    }
+final class CourseListRouter: CourseListRouterInput {
+    private unowned let viewController: UIViewController
     
     required init(viewController: UIViewController) {
         self.viewController = viewController
     }
-    
+
+    func goToDetailsView(with course: Course) {
+        viewController.performSegue(withIdentifier: "ShowDetails", sender: course)
+    }
 
 }

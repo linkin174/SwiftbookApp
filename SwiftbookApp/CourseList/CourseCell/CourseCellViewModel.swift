@@ -21,32 +21,31 @@ protocol CourseSectionViewModelProtocol {
     var numberOfRows: Int { get }
 }
 
-class CourseCellViewModel: CourseCellViewModelProtocol {
-
+final class CourseCellViewModel: CourseCellViewModelProtocol {
     var cellIdentifier: String {
         "CourseCell"
     }
-    
+
     var cellHeight: Double = 100
-    
+
     var courseName: String {
         course.name
     }
-    
+
     var imageData: Data? {
         imageManager.fetchImageData(from: course.imageUrl)
     }
-    
+
     private let course: Course
     private let imageManager: ImageManagerProtocol
-    
+
     required init(course: Course, imageManager: ImageManagerProtocol) {
         self.course = course
         self.imageManager = imageManager
     }
 }
 
-class CourseSectionViewModel: CourseSectionViewModelProtocol {
+final class CourseSectionViewModel: CourseSectionViewModelProtocol {
     var rows: [CourseCellViewModelProtocol] = []
     var numberOfRows: Int {
         rows.count

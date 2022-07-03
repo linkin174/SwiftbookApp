@@ -22,7 +22,7 @@ protocol CourseDetailsViewOutput {
     func favoriteButtonPressed()
 }
 
-class CourseDetailsViewController: UIViewController {
+final class CourseDetailsViewController: UIViewController {
     
     @IBOutlet private var courseNameLabel: UILabel!
     @IBOutlet private var numberOfLessonsLabel: UILabel!
@@ -31,8 +31,6 @@ class CourseDetailsViewController: UIViewController {
     @IBOutlet private var favoriteButton: UIButton!
     
     var presenter: CourseDetailsViewOutput!
-    
-    private var isFavorite = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,10 +43,6 @@ class CourseDetailsViewController: UIViewController {
 }
 
 extension CourseDetailsViewController: CourseDetailsViewInput {
-    func setImageTintDepedingOn(_ status: Bool) {
-        favoriteButton.tintColor = status ? .red : .gray
-    }
-    
     func setCourseName(_ name: String) {
         courseNameLabel.text = name
     }
@@ -63,5 +57,9 @@ extension CourseDetailsViewController: CourseDetailsViewInput {
     
     func setImage(from imageData: Data) {
         courseImage.image = UIImage(data: imageData)
+    }
+    
+    func setImageTintDepedingOn(_ status: Bool) {
+        favoriteButton.tintColor = status ? .red : .gray
     }
 }

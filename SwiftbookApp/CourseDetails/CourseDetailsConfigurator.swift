@@ -12,17 +12,18 @@ protocol CourseDetailsConfiguratorInput {
     func configure(with viewController: CourseDetailsViewController, _ course: Course)
 }
 
-class CourseDetailsViewConfigurator: CourseDetailsConfiguratorInput {
+final class CourseDetailsViewConfigurator: CourseDetailsConfiguratorInput {
     func configure(with viewController: CourseDetailsViewController, _ course: Course) {
-        
         let presenter = CourseDetailsPresenter(view: viewController)
+        let imageManager: ImageManagerProtocol = ImageManager()
+        let dataManager: DataManagerProtocol = DataManager()
         let interactor = CourseDetailsViewInteractor(
             presenter: presenter,
             course: course,
-            imageManager: ImageManager(),
-            dataManager: DataManager()
+            imageManager: imageManager,
+            dataManager: dataManager
         )
-        viewController.presenter = presenter
         presenter.interactor = interactor
+        viewController.presenter = presenter
     }
 }

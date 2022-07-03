@@ -8,28 +8,27 @@
 
 import Foundation
 
-struct RowData {
-    let imageData: Data
-    let courseName: String
-    let numberOfLessons: String
-    let numberOfTests: String
-}
 
 struct ListDataStore {
     var courses: [Course]
 }
 
 final class CourseListPresenter: CourseListViewOutput, CourseListInteractorOutput {
-
+    var router: CourseListRouterInput!
+    var interactor: CourseListInteractorInput!
+    private var dataStore: ListDataStore?
+    private unowned let view: CourseListViewInput
+    
+    required init(view: CourseListViewInput) {
+        self.view = view
+    }
+    
     func recieve(_ dataStore: ListDataStore) {
         self.dataStore = dataStore
         let section = CourseSectionViewModel()
         dataStore.courses.forEach { section.rows.append(CourseCellViewModel(course: $0, imageManager: ImageManager())) }
         view.reloadData(for: section)
     }
-    
-    
-    private var dataStore: ListDataStore?
     
     func didSelectedRow(at indexPath: IndexPath) {
         guard let course = dataStore?.courses[indexPath.row] else { return }
@@ -39,14 +38,4 @@ final class CourseListPresenter: CourseListViewOutput, CourseListInteractorOutpu
     func viewIsLoaded() {
         interactor.fetchCourses()
     }
-    
-
-    private unowned let view: CourseListViewInput
-    var router: CourseListRouterInput!
-    var interactor: CourseListInteractorInput!
-    
-    required init(view: CourseListViewInput) {
-        self.view = view
-    }
-    
 }

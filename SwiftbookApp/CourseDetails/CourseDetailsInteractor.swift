@@ -9,7 +9,8 @@
 import UIKit
 
 protocol CourseDetailsViewInteractorInput {
-    init(presenter: CourseDetailsViewInteractorOutput, course: Course, imageManager: ImageManagerProtocol, dataManager: DataManagerProtocol)
+    init(presenter: CourseDetailsViewInteractorOutput, course: Course,
+         imageManager: ImageManagerProtocol, dataManager: DataManagerProtocol)
     var isFavorite: Bool { get }
     func provideData()
     func toggleFavorite()
@@ -20,8 +21,7 @@ protocol CourseDetailsViewInteractorOutput: AnyObject {
     func recieveFavorite(_ status: Bool)
 }
 
-class CourseDetailsViewInteractor: CourseDetailsViewInteractorInput {
-    
+final class CourseDetailsViewInteractor: CourseDetailsViewInteractorInput {
     var isFavorite: Bool {
         get {
             dataManager.getFavoriteStatus(for: course.name)
@@ -35,7 +35,8 @@ class CourseDetailsViewInteractor: CourseDetailsViewInteractorInput {
     private let dataManager: DataManagerProtocol
     private unowned let presenter: CourseDetailsViewInteractorOutput
     
-    required init(presenter: CourseDetailsViewInteractorOutput, course: Course, imageManager: ImageManagerProtocol, dataManager: DataManagerProtocol) {
+    required init(presenter: CourseDetailsViewInteractorOutput, course: Course,
+                  imageManager: ImageManagerProtocol, dataManager: DataManagerProtocol) {
         self.presenter = presenter
         self.course = course
         self.imageManager = imageManager
@@ -49,11 +50,13 @@ class CourseDetailsViewInteractor: CourseDetailsViewInteractorInput {
     
     func provideData() {
         let data = imageManager.fetchImageData(from: course.imageUrl)
-        let viewData = DetailsData(imageData: data,
-                                   courseName: course.name,
-                                   numberOfLessons: course.numberOfLessons,
-                                   numberOfTests: course.numberOfTests,
-                                   isFavorite: isFavorite)
+        let viewData = DetailsData(
+            imageData: data,
+            courseName: course.name,
+            numberOfLessons: course.numberOfLessons,
+            numberOfTests: course.numberOfTests,
+            isFavorite: isFavorite
+        )
         presenter.recieve(viewData)
     }
 }

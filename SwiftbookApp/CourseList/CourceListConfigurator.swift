@@ -9,27 +9,17 @@
 import Foundation
 
 protocol CourseListConfiguratorInput {
-    func configure(with view: CourseListViewController)
+    func configure(with viewController: CourseListViewController)
 }
 
-class CourseListConfigurator: CourseListConfiguratorInput {
-    func configure(with view: CourseListViewController) {
-        let router = CourseListRouter(viewController: view)
-        let presenter = CourseListPresenter(view: view)
-        let interactor = CourseListInteractor(presenter: presenter, networkManager: NetworkManager())
+final class CourseListConfigurator: CourseListConfiguratorInput {
+    func configure(with viewController: CourseListViewController) {
+        let router = CourseListRouter(viewController: viewController)
+        let presenter = CourseListPresenter(view: viewController)
+        let networkManager: NetworkManagerProtocol = NetworkManager()
+        let interactor = CourseListInteractor(presenter: presenter, networkManager: networkManager)
         presenter.interactor = interactor
         presenter.router = router
-        view.presenter = presenter
+        viewController.presenter = presenter
     }
-    
-
-    
-    
-    //    func configure(with view: CourseListViewController, ) {
-//        let router = CourseListRouter(view: <#T##UIViewController#>)
-//        let presenter = CourseListPresenter(view: view, router: router)
-//        let interactor = CourseListInteractor(presenter: presenter)
-//        view.presenter = presenter
-//        presenter.interactor = interactor
-//    }
 }

@@ -16,18 +16,16 @@ struct DetailsData {
     let isFavorite: Bool
 }
 
-
-class CourseDetailsPresenter: CourseDetailsViewOutput, CourseDetailsViewInteractorOutput {
-    
-
+final class CourseDetailsPresenter: CourseDetailsViewOutput, CourseDetailsViewInteractorOutput {
     var interactor: CourseDetailsViewInteractorInput!
     
-    unowned private let view: CourseDetailsViewInput
+    private unowned let view: CourseDetailsViewInput
     required init(view: CourseDetailsViewInput) {
         self.view = view
     }
     
-    //MARK: View Out
+    // MARK: View Out
+
     func viewLoaded() {
         interactor.provideData()
     }
@@ -36,16 +34,17 @@ class CourseDetailsPresenter: CourseDetailsViewOutput, CourseDetailsViewInteract
         interactor.toggleFavorite()
     }
     
-    //MARK: Interactor Out
+    // MARK: Interactor Out
+
     func recieve(_ viewData: DetailsData) {
-        let numberOfLessonsText = String(viewData.numberOfLessons)
-        let numberOfTestsText = String(viewData.numberOfTests)
+        let numberOfLessonsText = "Number of lessons: \(viewData.numberOfLessons)"
+        let numberOfTestsText = "Number of tests: \(viewData.numberOfTests)"
         view.setCourseName(viewData.courseName)
         view.setNumberOfLessons(numberOfLessonsText)
         view.setNumberOfTests(numberOfTestsText)
+        view.setImageTintDepedingOn(viewData.isFavorite)
         guard let data = viewData.imageData else { return }
         view.setImage(from: data)
-        view.setImageTintDepedingOn(viewData.isFavorite)
     }
     
     func recieveFavorite(_ status: Bool) {

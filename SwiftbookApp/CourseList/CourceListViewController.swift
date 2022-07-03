@@ -18,9 +18,7 @@ protocol CourseListViewOutput {
     func didSelectedRow(at indexPath: IndexPath)
 }
 
-class CourseListViewController: UIViewController {
-    
-
+final class CourseListViewController: UIViewController {
     @IBOutlet var tableView: UITableView!
     
     var presenter: CourseListViewOutput!
@@ -67,16 +65,12 @@ class CourseListViewController: UIViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension CourseListViewController: UITableViewDataSource, CourseListViewInput {
+
+extension CourseListViewController: UITableViewDataSource, UITableViewDelegate, CourseListViewInput {
     func reloadData(for section: CourseSectionViewModel) {
         sectionViewModel = section
         tableView.reloadData()
         activityIndicator?.stopAnimating()
-    }
-    
-    func didLoaded() {
-            self.activityIndicator?.stopAnimating()
-            self.tableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -92,13 +86,9 @@ extension CourseListViewController: UITableViewDataSource, CourseListViewInput {
         cell.viewModel = sectionViewModel.rows[indexPath.row]
         return cell
     }
-}
-
-// MARK: - UITableViewDelegate
-extension CourseListViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         presenter.didSelectedRow(at: indexPath)
     }
 }
-

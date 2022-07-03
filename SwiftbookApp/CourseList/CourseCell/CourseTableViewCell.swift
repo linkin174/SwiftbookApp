@@ -12,13 +12,13 @@ protocol CellModelRepresentable {
     var viewModel: CourseCellViewModelProtocol? { get }
 }
 
-class CourseTableViewCell: UITableViewCell, CellModelRepresentable {
+final class CourseTableViewCell: UITableViewCell, CellModelRepresentable {
     var viewModel: CourseCellViewModelProtocol? {
         didSet {
             setup()
         }
     }
-    
+
     private func setup() {
         guard let viewModel = viewModel as? CourseCellViewModel else { return }
         var content = defaultContentConfiguration()
