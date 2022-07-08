@@ -22,9 +22,10 @@ final class CourseListViewController: UIViewController {
     @IBOutlet var tableView: UITableView!
     
     var presenter: CourseListViewOutput!
+    
     private let configurator: CourseListConfiguratorInput = CourseListConfigurator()
     private var sectionViewModel: CourseSectionViewModelProtocol = CourseSectionViewModel()
-    private var activityIndicator: UIActivityIndicatorView?
+    private(set) var activityIndicator: UIActivityIndicatorView?
   
     override func viewDidLoad() {
         super.viewDidLoad()

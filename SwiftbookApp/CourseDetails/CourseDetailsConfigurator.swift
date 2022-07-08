@@ -12,7 +12,7 @@ protocol CourseDetailsConfiguratorInput {
     func configure(with viewController: CourseDetailsViewController, _ course: Course)
 }
 
-final class CourseDetailsViewConfigurator: CourseDetailsConfiguratorInput {
+class CourseDetailsViewConfigurator: CourseDetailsConfiguratorInput {
     func configure(with viewController: CourseDetailsViewController, _ course: Course) {
         let presenter = CourseDetailsPresenter(view: viewController)
         let imageManager: ImageManagerProtocol = ImageManager()

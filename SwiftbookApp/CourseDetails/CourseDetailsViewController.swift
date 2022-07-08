@@ -24,14 +24,14 @@ protocol CourseDetailsViewOutput {
 
 final class CourseDetailsViewController: UIViewController {
     
-    @IBOutlet private var courseNameLabel: UILabel!
-    @IBOutlet private var numberOfLessonsLabel: UILabel!
-    @IBOutlet private var numberOfTestsLabel: UILabel!
-    @IBOutlet private var courseImage: UIImageView!
-    @IBOutlet private var favoriteButton: UIButton!
+    @IBOutlet private(set) var courseNameLabel: UILabel!
+    @IBOutlet private(set) var numberOfLessonsLabel: UILabel!
+    @IBOutlet private(set) var numberOfTestsLabel: UILabel!
+    @IBOutlet private(set) var courseImage: UIImageView!
+    @IBOutlet private(set) var favoriteButton: UIButton!
     
     var presenter: CourseDetailsViewOutput!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter.viewLoaded()
