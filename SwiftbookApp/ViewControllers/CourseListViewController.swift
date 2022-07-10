@@ -88,3 +88,4 @@ extension CourseListViewController: UITableViewDelegate {
         performSegue(withIdentifier: "ShowDetails", sender: course)
     }
 }
+
