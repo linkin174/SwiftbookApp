@@ -11,43 +11,39 @@
 //
 
 protocol CourseDetailsBusinessLogic {
-    func doSomething(request: CourseDetails.ShowCourseDetails.Request)
-    func changeIsFavoriteStatus(requset: CourseDetails.FavoriteButtonToggle.Request)
+    func provideCourseDetails()
+    func changeIsFavoriteStatus()
 }
 
 protocol CourseDetailsDataStore {
-    
-}
-
-struct DataStore {
-    let name: String
-    let numberOfLessons: Int
-    let numberOfTests: Int
+    var course: Course? { get set }
+    var isFavorite: Bool { get }
 }
 
 class CourseDetailsInteractor: CourseDetailsBusinessLogic, CourseDetailsDataStore {
     
-    func changeIsFavoriteStatus(requset: CourseDetails.FavoriteButtonToggle.Request) {
-        let currentStatus = DataManager.shared.getFavoriteStatus(for: requset.courseName)
-        let newStatus = !currentStatus
-        let response = CourseDetails.FavoriteButtonToggle.Response(isFavorite: newStatus)
-        DataManager.shared.setFavoriteStatus(for: requset.courseName, with: newStatus)
-        presenter?.changeIsFavoriteStatus(response: response)
-    }
-
-    var presenter: CourseDetailsPresentationLogic?
-    var worker: CourseDetailsWorker?
+    var isFavorite = false
+    var course: Course?
     
-    func doSomething(request: CourseDetails.ShowCourseDetails.Request) {
-//        worker = CourseDetailsWorker()
-//        worker?.doSomeWork()
-        let imageData = ImageManager.shared.fetchImageData(from: request.course.imageUrl)
-        let isFavorite = DataManager.shared.getFavoriteStatus(for: request.course.name)
-        let response = CourseDetails.ShowCourseDetails.Response(courseName: request.course.name,
-                                                                numberOfLessons: request.course.numberOfLessons,
-                                                                numberOfTests: request.course.numberOfTests,
+    var presenter: CourseDetailsPresentationLogic?
+    
+    private var worker = CourseDetailsWorker(imageService: ImageManager(), dataService: DataManager())
+    
+    func changeIsFavoriteStatus() {
+        isFavorite.toggle()
+        worker.setFavoriteStatus(for: course?.name ?? "Null", with: isFavorite)
+        let response = CourseDetails.ChangeFavoriteStatus.Response(isFavorite: isFavorite)
+        presenter?.presentFavoriteStatus(response: response)
+    }
+    
+    func provideCourseDetails() {
+        let imageData = worker.getImage(from: course?.imageUrl)
+        isFavorite = worker.getFavoriteStatus(for: course?.name ?? "")
+        let response = CourseDetails.ShowCourseDetails.Response(courseName: course?.name,
+                                                                numberOfLessons: course?.numberOfLessons,
+                                                                numberOfTests: course?.numberOfTests,
                                                                 imageData: imageData,
                                                                 isFavorite: isFavorite)
-        presenter?.presentSomething(response: response)
+        presenter?.presentCourseDetails(response: response)
     }
 }

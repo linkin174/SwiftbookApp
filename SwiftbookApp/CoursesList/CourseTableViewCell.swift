@@ -1,30 +1,31 @@
 //
-//  TableViewCell.swift
+//  CourseTableViewCell.swift
 //  SwiftbookApp
 //
-//  Created by Aleksandr Kretov on 10.07.2022.
+//  Created by Aleksandr Kretov on 17.07.2022.
 //  Copyright © 2022 Alexey Efimov. All rights reserved.
 //
 
 import UIKit
 
-protocol CellModelRepresentable {
+protocol CourseCellViewModelRepresentable {
     var viewModel: CourseCellViewModelProtocol? { get }
 }
 
-final class CourseTableViewCell: UITableViewCell, CellModelRepresentable {
+final class CourseTableViewCell: UITableViewCell, CourseCellViewModelRepresentable {
     var viewModel: CourseCellViewModelProtocol? {
         didSet {
-            setup()
+            updateView()
         }
     }
-
-    private func setup() {
+    
+    private func updateView() {
         guard let viewModel = viewModel as? CourseCellViewModel else { return }
         var content = defaultContentConfiguration()
         content.text = viewModel.courseName
-        if let imageData = viewModel.imageData {
-            content.image = UIImage(data: imageData)
+        if let data = viewModel.imageData {
+            guard let image = UIImage(data: data) else { return }
+            content.image = image
         }
         contentConfiguration = content
     }

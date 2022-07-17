@@ -11,7 +11,7 @@
         <!--Courses-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="CourseListViewController" customModule="SwiftbookApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="CoursesListViewController" customModule="SwiftbookApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -33,11 +33,14 @@
                                                 </imageView>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="6Og-B4-LBe" kind="show" identifier="CourseDetails" id="ig7-UO-HR3"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
-                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="V4H-Nd-8m4"/>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="aSa-Ma-wg8"/>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="aLm-KO-YHD"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="2FS-jd-mep"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -52,8 +55,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Courses" id="NYK-GG-pYY"/>
                     <connections>
-                        <outlet property="tableView" destination="c4C-rV-6Jd" id="KUj-eL-D9j"/>
-                        <segue destination="6Og-B4-LBe" kind="show" identifier="ShowDetails" id="cco-Xz-f27"/>
+                        <outlet property="tableView" destination="c4C-rV-6Jd" id="57m-bk-bgB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

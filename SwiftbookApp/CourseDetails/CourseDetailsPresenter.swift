@@ -10,27 +10,30 @@
 //  see http://clean-swift.com
 //
 
+import Foundation
+
 protocol CourseDetailsPresentationLogic {
-    func presentSomething(response: CourseDetails.ShowCourseDetails.Response)
-    func changeIsFavoriteStatus(response: CourseDetails.FavoriteButtonToggle.Response)
+    func presentCourseDetails(response: CourseDetails.ShowCourseDetails.Response)
+    func presentFavoriteStatus(response: CourseDetails.ChangeFavoriteStatus.Response)
 }
 
 class CourseDetailsPresenter: CourseDetailsPresentationLogic {
-    func changeIsFavoriteStatus(response: CourseDetails.FavoriteButtonToggle.Response) {
-        let viewModel = CourseDetails.FavoriteButtonToggle.ViewModel(isFavorite: response.isFavorite)
+    
+    func presentFavoriteStatus(response: CourseDetails.ChangeFavoriteStatus.Response) {
+        let viewModel = CourseDetails.ChangeFavoriteStatus.ViewModel(isFavorite: response.isFavorite)
         viewController?.displayFavoriteButtonStatus(viewModel: viewModel)
     }
     
     weak var viewController: CourseDetailsDisplayLogic?
     
-    func presentSomething(response: CourseDetails.ShowCourseDetails.Response) {
+    func presentCourseDetails(response: CourseDetails.ShowCourseDetails.Response) {
         
-        let numberOfLessonsLabel = "Number of lessons: \(response.numberOfLessons)"
-        let numberOfTestsLabel = "Number of tests: \(response.numberOfTests)"
-        let viewModel = CourseDetails.ShowCourseDetails.ViewModel(courseName: response.courseName,
+        let numberOfLessonsLabel = "Number of lessons: \(response.numberOfLessons ?? 0)"
+        let numberOfTestsLabel = "Number of tests: \(response.numberOfTests ?? 0)"
+        let viewModel = CourseDetails.ShowCourseDetails.ViewModel(courseName: response.courseName ?? "Nil",
                                                                   numberOfLessons: numberOfLessonsLabel,
                                                                   numberOfTests: numberOfTestsLabel,
-                                                                  imageData: response.imageData,
+                                                                  imageData: response.imageData ?? Data(),
                                                                   isFavorite: response.isFavorite)
         viewController?.displayCourseDetails(viewModel: viewModel)
     }

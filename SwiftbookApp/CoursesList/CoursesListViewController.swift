@@ -13,29 +13,27 @@
 import UIKit
 
 protocol CoursesListDisplayLogic: AnyObject {
-    func displaySomething(viewModel: CoursesList.Something.ViewModel)
+    func displayCourses(viewModel: CoursesList.DisplayCoursesList.ViewModel)
 }
 
 class CoursesListViewController: UIViewController {
+    
+    @IBOutlet var tableView: UITableView!
+    
         
     var interactor: CoursesListBusinessLogic?
     var router: (NSObjectProtocol & CoursesListRoutingLogic & CoursesListDataPassing)?
     
-    // MARK: Object lifecycle
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        setup()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
+    private var activityIndicator: UIActivityIndicatorView?
+    private var rows: [CourseCellViewModelProtocol] = []
     
     // MARK: View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        doSomething()
+        CourseListConfigurator.shared.configure(with: self)
+        activityIndicator = showActivityIndicator(in: view)
+        setupNavigationBar()
+        viewLoaded()
     }
     
     // MARK: Routing
@@ -48,28 +46,61 @@ class CoursesListViewController: UIViewController {
         }
     }
         
-    private func doSomething() {
-        let request = CoursesList.Something.Request()
-        interactor?.doSomething(request: request)
+    private func viewLoaded() {
+        interactor?.loadCourses()
     }
     
     // MARK: Setup
     private func setup() {
-        let viewController = self
-        let interactor = CoursesListInteractor()
-        let presenter = CoursesListPresenter()
-        let router = CoursesListRouter()
-        viewController.interactor = interactor
-        viewController.router = router
-        interactor.presenter = presenter
-        presenter.viewController = viewController
-        router.viewController = viewController
-        router.dataStore = interactor
+        CourseListConfigurator.shared.configure(with: self)
+    }
+    
+    private func setupNavigationBar() {
+        let navBarAppearence = UINavigationBarAppearance()
+        navBarAppearence.configureWithOpaqueBackground()
+        navBarAppearence.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearence.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearence.backgroundColor = .blue
+        navigationController?.navigationBar.standardAppearance = navBarAppearence
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearence
+    }
+    
+    private func showActivityIndicator(in view: UIView) -> UIActivityIndicatorView {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .black
+        indicator.startAnimating()
+        indicator.center = view.center
+        indicator.hidesWhenStopped = true
+        view.addSubview(indicator)
+        return indicator
     }
 }
 
 extension CoursesListViewController: CoursesListDisplayLogic {
-    func displaySomething(viewModel: CoursesList.Something.ViewModel) {
-        
+    func displayCourses(viewModel: CoursesList.DisplayCoursesList.ViewModel) {
+        rows = viewModel.rows
+        activityIndicator?.stopAnimating()
+        tableView.reloadData()
+    }
+}
+
+extension CoursesListViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        rows.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellViewModel = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellViewModel.identifier, for: indexPath) as! CourseTableViewCell
+        cell.viewModel = cellViewModel 
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        rows[indexPath.row].height
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

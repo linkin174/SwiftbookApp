@@ -15,14 +15,11 @@ enum CourseDetails {
  
     // MARK: Use cases
     enum ShowCourseDetails {
-        struct Request {
-            let course: Course
-        }
-        
+
         struct Response {
-            let courseName: String
-            let numberOfLessons: Int
-            let numberOfTests: Int
+            let courseName: String?
+            let numberOfLessons: Int?
+            let numberOfTests: Int?
             let imageData: Data?
             let isFavorite: Bool
         }
@@ -31,16 +28,12 @@ enum CourseDetails {
             let courseName: String
             let numberOfLessons: String
             let numberOfTests: String
-            let imageData: Data?
+            let imageData: Data
             let isFavorite: Bool
         }
     }
     
-    enum FavoriteButtonToggle {
-        struct Request {
-            let courseName: String
-        }
-        
+    enum ChangeFavoriteStatus {
         struct Response {
             let isFavorite: Bool
         }

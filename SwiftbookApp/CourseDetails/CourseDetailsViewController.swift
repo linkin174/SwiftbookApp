@@ -14,7 +14,7 @@ import UIKit
 
 protocol CourseDetailsDisplayLogic: AnyObject {
     func displayCourseDetails(viewModel: CourseDetails.ShowCourseDetails.ViewModel)
-    func displayFavoriteButtonStatus(viewModel: CourseDetails.FavoriteButtonToggle.ViewModel)
+    func displayFavoriteButtonStatus(viewModel: CourseDetails.ChangeFavoriteStatus.ViewModel)
 }
 
 class CourseDetailsViewController: UIViewController {
@@ -26,7 +26,7 @@ class CourseDetailsViewController: UIViewController {
     @IBOutlet private var favoriteButton: UIButton!
         
     var interactor: CourseDetailsBusinessLogic?
-    var course: Course!
+    var router: (NSObjectProtocol & CourseDetailsRoutingLogic & CourseDetailsDataPassing)?
     
     // MARK: Object lifecycle
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -42,17 +42,15 @@ class CourseDetailsViewController: UIViewController {
     // MARK: View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        doSomething()
+        passRequest()
     }
         
-    private func doSomething() {
-        let request = CourseDetails.ShowCourseDetails.Request(course: course)
-        interactor?.doSomething(request: request)
+    private func passRequest() {
+        interactor?.provideCourseDetails()
     }
     
     @IBAction func favoriteButtonPressed(_ sender: Any) {
-        let request = CourseDetails.FavoriteButtonToggle.Request(courseName: course.name)
-        interactor?.changeIsFavoriteStatus(requset: request)
+        interactor?.changeIsFavoriteStatus()
     }
     
     // MARK: Setup
@@ -60,15 +58,19 @@ class CourseDetailsViewController: UIViewController {
         let viewController = self
         let interactor = CourseDetailsInteractor()
         let presenter = CourseDetailsPresenter()
+        let router = CourseDetailsRouter()
         viewController.interactor = interactor
+        viewController.router = router
         interactor.presenter = presenter
         presenter.viewController = viewController
+        router.viewController = viewController
+        router.dataStore = interactor
     }
 }
 
 extension CourseDetailsViewController: CourseDetailsDisplayLogic {
     
-    func displayFavoriteButtonStatus(viewModel: CourseDetails.FavoriteButtonToggle.ViewModel) {
+    func displayFavoriteButtonStatus(viewModel: CourseDetails.ChangeFavoriteStatus.ViewModel) {
         favoriteButton.tintColor = viewModel.isFavorite ? .red : .gray
     }
     
@@ -77,7 +79,6 @@ extension CourseDetailsViewController: CourseDetailsDisplayLogic {
         numberOfLessonsLabel.text = viewModel.numberOfLessons
         numberOfTestsLabel.text = viewModel.numberOfTests
         favoriteButton.tintColor = viewModel.isFavorite ? .red : .gray
-        guard let imageData = viewModel.imageData else { return }
-        courseImage.image = UIImage(data: imageData)
+        courseImage.image = UIImage(data: viewModel.imageData)
     }
 }

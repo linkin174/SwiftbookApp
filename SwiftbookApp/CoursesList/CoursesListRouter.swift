@@ -13,7 +13,7 @@
 import UIKit
 
 @objc protocol CoursesListRoutingLogic {
-    //func routeToSomewhere(segue: UIStoryboardSegue?)
+    func routeToCourseDetails(segue: UIStoryboardSegue?)
 }
 
 protocol CoursesListDataPassing {
@@ -26,33 +26,37 @@ class CoursesListRouter: NSObject, CoursesListRoutingLogic, CoursesListDataPassi
     var dataStore: CoursesListDataStore?
     
     // MARK: Routing
-    /*
-    func routeToSomewhere(segue: UIStoryboardSegue?) {
+    
+    func routeToCourseDetails(segue: UIStoryboardSegue?) {
         if let segue = segue {
-            let destinationVC = segue.destination as! SomewhereViewController
-            var destinationDS = destinationVC.router!.dataStore!
-            passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-        } else {
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let destinationVC = storyboard.instantiateViewController(withIdentifier: "SomewhereViewController") as! SomewhereViewController
-            var destinationDS = destinationVC.router!.dataStore!
-            passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-            navigateToSomewhere(source: viewController!, destination: destinationVC)
+            guard let dataStore = dataStore else { return }
+            guard let destinationVC = segue.destination as? CourseDetailsViewController else { return }
+            guard var destinationDS = destinationVC.router?.dataStore else { return }
+            passDataToCourseDetails(source: dataStore, destination: &destinationDS)
         }
+        /*else {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            guard let dataStore = dataStore else { return }
+            guard let viewController = viewController else { return }
+            guard let destinationVC = storyboard.instantiateViewController(withIdentifier: "CourseDetailsViewController") as? CourseDetailsViewController else { return }
+            guard var destinationDS = destinationVC.router?.dataStore else { return }
+            passDataToCourseDetails(source: dataStore, destination: &destinationDS)
+            navigateToCourseDetails(source: viewController, destination: destinationVC)
+        } */
     }
-    */
     
     // MARK: Navigation
-    /*
-    func navigateToSomewhere(source: CoursesListViewController, destination: SomewhereViewController) {
+    
+    func navigateToCourseDetails(source: CoursesListViewController, destination: CourseDetailsViewController) {
         source.show(destination, sender: nil)
     }
-    */
+    
     
     // MARK: Passing data
-    /*
-    func passDataToSomewhere(source: CoursesListDataStore, destination: inout SomewhereDataStore) {
-        destination.name = source.name
+    
+    func passDataToCourseDetails(source: CoursesListDataStore, destination: inout CourseDetailsDataStore) {
+        if let indexPath = viewController?.tableView.indexPathForSelectedRow {
+            destination.course = source.courses[indexPath.row]
+        }
     }
-    */
 }

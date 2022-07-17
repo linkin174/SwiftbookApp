@@ -10,8 +10,27 @@
 //  see http://clean-swift.com
 //
 
+import Foundation
+
 class CourseDetailsWorker {
-    func doSomeWork() {
-        
+    
+    private let imageService: ImageManagerProtocol
+    private let dataService: DataManagerProtocol
+    
+    init(imageService: ImageManagerProtocol, dataService: DataManagerProtocol) {
+        self.imageService = imageService
+        self.dataService = dataService
+    }
+    
+    func getImage(from imageURL: URL?) -> Data? {
+        imageService.fetchImageData(from: imageURL)
+    }
+    
+    func getFavoriteStatus(for courseName: String) -> Bool {
+        dataService.getFavoriteStatus(for: courseName)
+    }
+    
+    func setFavoriteStatus(for courseName: String, with status: Bool) {
+        dataService.setFavoriteStatus(for: courseName, with: status)
     }
 }
