@@ -20,7 +20,6 @@ class CoursesListViewController: UIViewController {
     
     @IBOutlet var tableView: UITableView!
     
-        
     var interactor: CoursesListBusinessLogic?
     var router: (NSObjectProtocol & CoursesListRoutingLogic & CoursesListDataPassing)?
     
